@@ -1,5 +1,5 @@
 ## 安装项目依赖
-npm i
+yarn
 
 ## 启动项目
 npm run wf
