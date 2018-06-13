@@ -1,0 +1,39 @@
+@import "../common/utils";
+
+.top-bar {
+  width: 100%;
+  padding: 0 20px;
+  height: 88px;
+  background-color: white;
+  font-size: 32px;
+  border-bottom: 1px solid #DFDFDF;
+  color: rgb(255, 126, 0);
+  @include flex-center__vertical;
+  justify-content: space-between;
+}
+
+.icon-group {
+  //width: 100px;
+  height: 100%;
+  display: flex;
+  //justify-content: right;
+  align-items: center;
+}
+
+.icon__menu {
+  width: 44px;
+  height: 38px;
+  background: no-repeat 100% url('../../images/icon-menu.png');
+}
+
+.icon__more-people {
+  width: 44px;
+  height: 36px;
+  background: no-repeat 100% url('../../images/icon-more-people.png');
+}
+
+.icon__bell {
+  width: 31px;
+  height: 35px;
+  background: no-repeat 100% url('../../images/icon-bell.png');
+}

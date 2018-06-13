@@ -1,0 +1,13 @@
+@import "../common/utils";
+
+.overlay {
+  @include overlay;
+  @include flex-center;
+  flex-direction: column;
+}
+
+#order-reminder {
+  width: 444px;
+  height: 290px;
+  background: no-repeat 100% url("../../images/order-reminder.jpg");
+}

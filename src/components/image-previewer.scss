@@ -1,0 +1,71 @@
+@import "../common/utils";
+$orange: #FD7E23;
+
+
+.overlay {
+  @include overlay;
+  @include flex-center;
+  flex-direction: column;
+  background-color: rgba(49, 49, 49, 0.4);
+}
+
+#image-previewer-container {
+  background-color: rgb(255, 255, 255);
+  width: 524px;
+  padding: 30px;
+}
+
+#dish-image {
+  width: 100%;
+}
+
+#dish-name {
+  font-size: 24px;
+  color: rgb(1, 1, 1);
+  margin-top: 30px;
+}
+
+#tag-list {
+  width: 100%;
+  margin-top: 10px;
+
+  & > li {
+    display: inline-block;
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+}
+
+.tag {
+  padding: 5px 10px;
+  border: 2px solid rgb(220, 220, 220);
+  border-radius: 15px;
+  font-size: 18px;
+  color: rgb(160, 160, 160);
+
+  &.active {
+    color: $orange;
+    border-color: $orange;
+  }
+}
+
+#price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+
+  & > span {
+    font-size: 24px;
+  }
+}
+
+#close-btn {
+  margin: auto;
+  margin-top: 54px;
+  width: 44px;
+  height: 44px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url('../../images/btn-close.png');
+}

@@ -1,0 +1,25 @@
+@import "./common/reset";
+@import "./common/utils";
+@import "./common/style";
+
+
+#app {
+  height: 100%;
+  font-family: "Microsoft YaHei", "Heiti SC";
+  background-color: $app-bg-color;
+}
+
+.slide-enter-active {
+  transition: all .3s ease;
+}
+.slide-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-enter, .slide-leave-to {
+  transform: translateX(-100%);
+}
+
+.color__orange{
+  color: $orange;
+}
+

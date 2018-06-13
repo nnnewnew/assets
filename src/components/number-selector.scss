@@ -1,0 +1,65 @@
+@import "../common/utils";
+@import "../common/colors";
+
+.overlay {
+  @include overlay;
+  @include flex-center;
+  flex-direction: column;
+  background-color: rgba(49, 49, 49, 0.4);
+}
+
+#number-selector-container {
+  background-color: rgb(255, 255, 255);
+  width: 524px;
+  height: 568px;
+}
+
+#header {
+  font-size: 30px;
+  color: rgb(1, 1, 1);
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+}
+
+#number-selector-list {
+  padding: 0 32px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  & > li {
+    margin-bottom: 20px;
+  }
+}
+
+.number-selector {
+  font-size: 30px;
+  color: rgb(160, 160, 160);
+  //border: 1px solid rgb(185, 185, 185);/*no*/
+  background: no-repeat 100%/100% url('../../images/rec.png');
+  width: 96px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+
+  &.selected {
+    color: $orange;
+    border-color: $orange;
+    background: no-repeat 100%/100% url('../../images/rec__orange.png');
+  }
+}
+
+#start-btn {
+  font-size: 30px;
+  color: $orange;
+  border-color: $orange;
+  border-width: 2px;
+  border-style: solid;
+  width: 276px;
+  height: 54px;
+  line-height: 54px;
+  margin: 0 auto;
+  margin-top: 16px;
+  text-align: center;
+}

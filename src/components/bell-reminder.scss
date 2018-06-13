@@ -1,0 +1,13 @@
+@import "../common/utils";
+
+.overlay {
+  @include overlay;
+  @include flex-center;
+  flex-direction: column;
+}
+
+#bell-reminder {
+  width: 442px;
+  height: 288px;
+  background: no-repeat 100% url("../../images/bell-reminder.png");
+}
