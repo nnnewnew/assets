@@ -3,12 +3,12 @@
         <ul class="record-list-table">
             <li class="record-item"
                 v-for="r in pageData.recordList">
-                <span class="date-time">{{transDateTime(r.dateTime)}}</span>
+                <span class="date-time">{{transDateTime(r.handleDate)}}</span>
                 <span class="dots"></span>
                 <span class="record-info">
                     <span>由</span>
-                    <span class="did-by">{{r.name}}</span>
-                    <span class="work">{{r.work}}</span>
+                    <span class="did-by">{{r.handler}}</span>
+                    <span class="work">{{r.status}}</span>
                 </span>
             </li>
         </ul>
@@ -47,12 +47,9 @@
         },
         methods: {
             queryAsync() {
-                let data = {
-                    sn: Cookie.get('snId'),
-                };
-                axios.post(API.GET_ASSET_CHANGED_RECORD, data)
+                axios.post(`/test/api/v1/asset/infos/history/status/`+Cookie.get('snId'), {})
                     .then(res => {
-                        this.pageData.recordList = res.recordList;
+                        this.pageData.recordList = res.info.allStatus;
                     });
 
                 if(this.testData.isTesting){

@@ -5,42 +5,42 @@
                 <li class="device-detail-item">
                     <span>SN码</span>
                     <span>:</span>
-                    <span v-show="!isEditing">{{pageData.sn}}</span>
-                    <span v-show="isEditing">
-                        <input type="text" v-model="pageData.sn">
-                    </span>
+                    <span>{{pageData.sn}}</span>
+                    <!--<span v-show="isEditing">-->
+                        <!--<input type="text" v-model="pageData.sn">-->
+                    <!--</span>-->
                 </li>
                 <li class="device-detail-item">
                     <span>设备号</span>
                     <span>:</span>
-                    <span v-show="!isEditing">{{pageData.deviceNo}}</span>
-                    <span v-show="isEditing">
-                        <input type="text" v-model="pageData.deviceNo">
-                    </span>
+                    <span>{{pageData.deviceNo}}</span>
+                    <!--<span v-show="isEditing">-->
+                        <!--<input type="text" v-model="pageData.deviceNo">-->
+                    <!--</span>-->
                 </li>
                 <li class="device-detail-item">
                     <span>设备型号</span>
                     <span>:</span>
-                    <span v-show="!isEditing">{{pageData.deviceType}}</span>
-                    <span v-show="isEditing">
-                        <input type="text" v-model="pageData.deviceType">
-                    </span>
+                    <span>{{pageData.deviceType}}</span>
+                    <!--<span v-show="isEditing">-->
+                        <!--<input type="text" v-model="pageData.deviceType">-->
+                    <!--</span>-->
                 </li>
                 <li class="device-detail-item">
                     <span>所属项目</span>
                     <span>:</span>
-                    <span v-show="!isEditing">{{pageData.projectName}}</span>
-                    <span v-show="isEditing">
-                        <input type="text" v-model="pageData.projectName">
-                    </span>
+                    <span>{{pageData.projectName}}</span>
+                    <!--<span v-show="isEditing">-->
+                        <!--<input type="text" v-model="pageData.projectName">-->
+                    <!--</span>-->
                 </li>
                 <li class="device-detail-item">
                     <span>当前状态</span>
                     <span>:</span>
-                    <span v-show="!isEditing">{{pageData.status}}</span>
-                    <span v-show="isEditing">
-                        <input type="text" v-model="pageData.status">
-                    </span>
+                    <span>{{pageData.status}}</span>
+                    <!--<span v-show="isEditing">-->
+                        <!--<input type="text" v-model="pageData.status">-->
+                    <!--</span>-->
                 </li>
                 <li class="device-detail-item">
                     <span>当前位置</span>
@@ -53,23 +53,22 @@
                 <li class="device-detail-picture">
                     <span>照片信息</span>
                     <span>:</span>
-                    <p class="picture-table"
-                       v-show="!isEditing">
+                    <p class="picture-table" v-show="!isEditing">
                         <span v-for="p in pageData.pictures">
                             <img class="device-item-img"
                                  :src="imgSrc(p)" alt="">
                         </span>
                     </p>
-                    <p class="picture-table"
-                       v-show="isEditing">
+                    <p class="picture-table" v-show="isEditing">
                         <span v-for="(p,index) in pageData.pictures">
                             <img class="device-item-img"
                                  :src="imgSrc(p)" alt="">
                             <span class="del" @click="delImg(index)">x</span>
                         </span>
-                        <span>
+                        <span @click="chooseToUpload()">
                             <img class="device-item-img"
                                  src="../../images/icon_add.png" alt="">
+                            <input id="file-input" type="file" hidden/>
                         </span>
                     </p>
                 </li>
@@ -92,7 +91,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -116,12 +114,17 @@
                     position: '',
                     pictures: []
                 },
+                imgUpload : {
+                    imgUrl : '',
+                    previewImgUrl : '',
+                    setupTips: {
+                        capacity: '1M',
+                        imgFormat: 'PNG或JPG',
+                        sizeX: '336',
+                        sizeY: '336',
+                    }
+                },
                 isEditing: false,
-
-                testData: {
-                    isTesting: true,
-
-                }
             }
         },
         computed: {
@@ -129,59 +132,65 @@
         },
         methods: {
             queryAsync() {
-                let data = {
-                    sn : Cookie.get('snId')
-                };
-                axios.post(API.GET_ASSET_INFO_BY_SN, data)
+                axios.get(`/test/api/v1/asset/scan/`+Cookie.get('snId')+`?token=`+Cookie.get('token'), {})
                     .then(res => {
-                        Toast({
-                            message: res.message,
-                            position: 'bottom',
-                            duration: '5000'
-                        });
-                        this.pageData = {
-                            sn : res.sn,
-                            deviceNo : res.deviceNo,
-                            deviceType : res.deviceType,
-                            projectName : res.projectName,
-                            status : res.status,
-                            position : res.position,
-                            pictures : res.pictures
+                        if(res.info){
+                            this.pageData = {
+                                sn : res.info[0].identifier,
+                                deviceNo : res.info[0].uniqueId,
+                                deviceType : res.info[0].assetType.typeName + '-' + res.info[0].assetModel.modelName,
+                                projectName : res.info[0].currentStatus.projectId,
+                                status : res.info[0].currentStatus.status,
+                                position : res.info[0].currentStatus.location.locationName + '-' + res.info[0].currentStatus.location.locationDetail,
+                            }
+                        }else {
+                            Toast({
+                                message: '无有效数据',
+                                position: 'bottom',
+                                duration: '3500'
+                            });
+                        }
+                        if(res.attributes){
+                            this.pageData.pictures = res.attributes.imgs;
                         }
                     });
-
-                if(this.testData.isTesting){
-                    this.pageData = {
-                        sn: '302314123441512311,302314123441512311',
-                        deviceNo: '3023141234',
-                        deviceType: 'EC-341',
-                        projectName: '龙泉社区',
-                        status: '待安装',
-                        position: '3楼-A区',
-                        pictures: ['checkbox__active.png','bell-reminder.png','bell-reminder.png','bell-reminder.png']
-                    }
-                }
             },
             imgSrc(s) {
-                return URLS.UPLOAD_IMG_URL + s
+                return URLS.UPLOAD_IMG_URL + s.imgName
             },
             modifyDetailInfo() {
                 this.isEditing = true;
+            },
+            imgLoadActionWatching() {
+                document.getElementById('file-input').addEventListener('change', (e) => {
+                    let file = e.target.files[0];
+                    let formData = new FormData();
+                    formData.append(file.name, file);
+                    axios.post('file/upload', formData, {
+                        // headers: {'content-type': 'multipart/form-data'},
+                    }).then(res => {
+                        this.pageData.pictures.push(res.FileUrl);
+                    });
+                    // var reader = new FileReader();
+                    // reader.addEventListener("load", e2 => {
+                    //     this.previewImgUrl = e2.currentTarget.result;
+                    // }, false);
+                    // reader.readAsDataURL(file);
+                }, false)
+            },
+            chooseToUpload() {
+                document.getElementById('file-input').click();
             },
             delImg(index) {
                 this.pageData.pictures.splice(index,1);
             },
             submitInfoAsync() {
                 let data = {
-                    sn: this.pageData.sn,
-                    deviceNo: this.pageData.deviceNo,
-                    deviceType: this.pageData.deviceType,
-                    projectName: this.pageData.projectName,
-                    status: this.pageData.status,
-                    position: this.pageData.position,
-                    pictures: this.pageData.pictures
+                    assetId: this.pageData.deviceNo,
+                    data: this.pageData.position,
+                    img: this.pageData.pictures
                 };
-                axios.post(API.UPDATE_DEVICE_DETAIL, data)
+                axios.post(`/test/api/v1/asset/install/`+this.pageData.deviceNo, data)
                     .then(res => {
                         Toast({
                             message: res.message,
@@ -190,11 +199,6 @@
                         });
                         this.isEditing = false;
                     });
-
-                if(this.testData.isTesting){
-                    this.isEditing = false;
-                    this.queryAsync();
-                }
             },
             changeRecords() {
                 router.push({
@@ -206,6 +210,7 @@
 
         },
         mounted() {
+            this.imgLoadActionWatching();
             this.queryAsync();
         },
         destroyed() {

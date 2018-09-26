@@ -4,7 +4,7 @@ import Cookie from 'js-cookie';
 
 const API = {
     //获取账户信息
-    LOGIN: 'Interface/login',
+    LOGIN: '/test/api/v1/login',
     //注销登录
     LOGOUT: 'Interface/logout',
     //通过SN编号查询资产信息
@@ -19,7 +19,7 @@ const API = {
 };
 
 const URLS = {
-    BASE_URL: 'http://ddyb.api.51shoubei.com/api/',
+    BASE_URL: 'http://116.62.142.49:8082/',
     UPLOAD_IMG_URL: '../../images/',
 };
 
@@ -28,7 +28,8 @@ function init() {
     axios.defaults.baseURL = URLS.BASE_URL;
     axios.defaults.withCredentials = false;
     // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-    axios.defaults.headers.post['Content-Type'] = 'application/json';
+    axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
     // 超时时间
     axios.defaults.timeout = 20000;
@@ -40,6 +41,7 @@ function init() {
         // if (token) {  // 每次发送请求之前判断是否存在token，如果存在，则统一在http请求的header都加上token，不用每次请求都手动添加了
         //     config.headers.Authorization = token;
         // }
+        console.log(config);
         if (config.method === 'post' && config.url.indexOf('file/upload') === -1) {
             let token = Cookie.get('token');
             if (!!token) {
@@ -68,45 +70,15 @@ function init() {
         // loadinginstace.close();
         Indicator.close();
         if (res.status === 200) {
-            if (res.data.ErrorCode === 0) {
-                return Promise.resolve(res.data.Value);
-            } else if (res.data.ErrorCode === 1) {
-                // Message({
-                //     message: res.data.ErrorMessages[0],
-                //     type: 'error'
-                // });
+            if (res.data.statusCode === 'SUCCESS') {
+                return Promise.resolve(res.data);
+            } else {
                 Toast({
-                    message: res.data.ErrorMessages[0],
+                    message: res.data.err,
                     position: 'bottom',
                     duration: '5000'
                 });
-                return Promise.reject(new Error(res.data.ErrorMessages[0]));
-            } else {
-                //180606增加对高聪同步桌台请求的返回值处理机制
-                if (res.data.code===200){
-                    // Message({
-                    //     message: res.data.message,
-                    //     type: 'success'
-                    // });
-                    Toast({
-                        message: res.data.message,
-                        position: 'bottom',
-                        duration: '5000'
-                    });
-                    return Promise.resolve(res.data.message);
-                }else {
-                    // Message({
-                    //     message: res.data.message,
-                    //     type: 'error'
-                    // });
-                    Toast({
-                        message: res.data.message,
-                        position: 'bottom',
-                        duration: '5000'
-                    });
-                    return Promise.reject(new Error("无效返回值!"));
-                }
-                // return Promise.reject(new Error("无效返回值"));
+                return Promise.reject(new Error(res.data.err));
             }
         } else {
             return Promise.reject(new Error("服务器错误"));

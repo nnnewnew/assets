@@ -9,6 +9,9 @@
                 <span>密码</span>
                 <input id="password" type="password" placeholder="请输入密码" v-model="pageData.password">
             </div>
+            <div class="input-item" style="flex-direction: row-reverse;">
+                <mt-switch v-model="pageData.remembered">记住密码</mt-switch>
+            </div>
             <div class="btn-login" @click="login">
                 登录
             </div>
@@ -21,6 +24,7 @@
     import {API} from '../common/config';
     import router from '../router';
     import Cookie from 'js-cookie';
+    import { Switch } from 'mint-ui';
 
     export default {
         name: "login",
@@ -28,36 +32,66 @@
             return {
                 pageData: {
                     username: '',
-                    password: ''
+                    password: '',
+                    remembered: false
                 },
             }
         },
         methods: {
             login() {
-                let data = {
-                    userName: this.pageData.username,
-                    password: this.pageData.password
-                };
-                axios.post(API.LOGIN, data)
-                    .then(res => {
-                        Cookie.set('token',res.token);
-                        Cookie.set('userName',res.userName);
-                        Cookie.set('userRole',res.userRole);
+                // let data = {
+                //     username: this.pageData.username,
+                //     password: this.pageData.password
+                // };
+                // axios.post(`/test/api/v1/login?username=`+this.pageData.username+`&password=`+this.pageData.password, {})
+                //     .then(res => {
+                //         console.log(this.pageData.remembered===true);
+                //         if(this.pageData.remembered===true){
+                //             Cookie.set('username',this.pageData.username);
+                //             Cookie.set('password',this.pageData.password);
+                //             Cookie.set('isRemembered','true');
+                //         }else {
+                //             Cookie.remove('username');
+                //             Cookie.remove('password');
+                //             Cookie.set('isRemembered','false');
+                //         }
                         router.push({
                             path: '/index'
                         });
-                    });
-                router.push({
-                    path: '/index'
-                });
+                    // });
+                // axios.post(`http://192.168.0.245:8080/v1/passport/login/?username=`+this.pageData.username+`&password=`+this.pageData.password, {account:this.pageData.username,password:this.pageData.password})
+                //     .then(res => {
+                //         console.log(this.pageData.remembered===true);
+                //         if(this.pageData.remembered===true){
+                //             Cookie.set('username',this.pageData.username);
+                //             Cookie.set('password',this.pageData.password);
+                //             Cookie.set('isRemembered','true');
+                //         }else {
+                //             Cookie.remove('username');
+                //             Cookie.remove('password');
+                //             Cookie.set('isRemembered','false');
+                //         }
+                //         router.push({
+                //             path: '/index'
+                //         });
+                //     });
             },
+            initData(){
+                if(Cookie.get('isRemembered')==='true'){
+                    this.pageData = {
+                        username : Cookie.get('username'),
+                        password : Cookie.get('password'),
+                        remembered : true
+                    }
+                }
+            }
         },
         computed: {},
         created(){
 
         },
         mounted(){
-
+            this.initData();
         },
         destroyed(){
 
